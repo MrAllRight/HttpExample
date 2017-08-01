@@ -1,4 +1,4 @@
-package mrallright.httpexample;
+package mrallright.httpexample.okhttp;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+import mrallright.httpexample.R;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;

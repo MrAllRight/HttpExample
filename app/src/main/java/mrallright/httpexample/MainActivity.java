@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
             jsonObject.put("pageSize", "20");
             jsonObject.put("parentid", "0");
             jsonObject.put("type", "1");
-            post(POST_URL, jsonObject.toString());
+//            post(POST_URL, jsonObject.toString());
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This program downloads a URL and print its contents as a string
-     *
+     *这是官方get请求的代码
      * @param url
      * @return
      * @throws IOException
@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This program posts data to a service
-     *
+     *这是官方post请求
      * @param url
      * @param json
      * @return

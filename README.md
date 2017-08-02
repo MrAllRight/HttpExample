@@ -5,7 +5,7 @@ Rxjava2+Retrofit2+mvp的简单实现，满足日常的网络请求
 
 1.单独调试okhttp功能时，请参考okhttp目录，并将manifest的启动页面改成OkhttpActivity
 
-2.单独调试Retrofit功能时，请参考retrogut目录，并将manifest的启动页面改成RetrofitActivity
+2.单独调试Retrofit功能时，请参考retrofit目录，并将manifest的启动页面改成RetrofitActivity
 
 3.单独调试Rxjava基本功能时，请参考rxjava目录，并将manifest的启动页面改成RxjavaSimpleUseActivity
 

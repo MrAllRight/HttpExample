@@ -8,6 +8,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.security.KeyStore;
+import java.security.SecureRandom;
+import java.security.cert.CertificateFactory;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
 
 import mrallright.httpexample.R;
 import okhttp3.Call;
@@ -18,9 +25,10 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class MainActivity extends AppCompatActivity {
-    private final String TAG = "MainActivity";
-    private String GET_URL = "https://www.baidu.com/";
+public class OkhttpActivity extends AppCompatActivity {
+    private final String TAG = "OkhttpActivity";
+    private String GET_URL = "https://baidu.com";
+    private String GET_URL_HTTPS = "https://kyfw.12306.cn/otn/leftTicket/init";
     public static final String POST_URL = "http://zhushou.72g.com/app/gift/gift_list/";
     private OkHttpClient client;
     /**
@@ -34,10 +42,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        client = new OkHttpClient();
+
         try {
+            OkHttpClient.Builder builder = new OkHttpClient.Builder();
+            addCertificate(getAssets().open("12306.cer"), builder);
             //GET请求
             run(GET_URL);
+            run(GET_URL_HTTPS);//Https请求
             //POST请求
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("page", "1");
@@ -55,7 +66,8 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This program downloads a URL and print its contents as a string
-     *这是官方get请求的代码
+     * 这是官方get请求的代码
+     *
      * @param url
      * @return
      * @throws IOException
@@ -67,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                Log.d(TAG, "get onFailure=" + e.getMessage());
             }
 
             @Override
@@ -80,7 +93,8 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This program posts data to a service
-     *这是官方post请求
+     * 这是官方post请求
+     *
      * @param url
      * @param json
      * @return
@@ -103,6 +117,24 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "post response=" + response.body().string());
             }
         });
+
+    }
+
+    public void addCertificate(InputStream certificate, OkHttpClient.Builder builder) {
+        try {
+            CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");//设置证书格式
+            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            keyStore.load(null);
+            keyStore.setCertificateEntry("12306", certificateFactory.generateCertificate(certificate));
+            final TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            trustManagerFactory.init(keyStore);
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, trustManagerFactory.getTrustManagers(), new SecureRandom());
+            client = builder.sslSocketFactory(sslContext.getSocketFactory()).build();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 }

@@ -4,17 +4,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
-import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 import mrallright.httpexample.R;
-import okhttp3.ResponseBody;
+import mrallright.httpexample.retrofit.GameBean;
 
 
 /**
@@ -38,33 +33,16 @@ public class RxjavaSimpleUseActivity extends AppCompatActivity {
         map.put("pageSize", "20");
         map.put("parentid", "0");
         map.put("type", "1");
-        HttpCenter.getInstance().service.getGameList(map)
-                .subscribeOn(Schedulers.io())//指定网络请求在io线程
-                .observeOn(AndroidSchedulers.mainThread())//指定返回结果处理在主线程，这样我们就可以在onnext中更新ui了
-                .subscribe(new Observer<ResponseBody>() {
-                    @Override
-                    public void onSubscribe(@NonNull Disposable d) {
+        HttpCenter.getInstance().getGameList(new BaseObserver(new BaseObserver.ResponseListener<List<GameBean>>() {
+            @Override
+            public void onSuccess(List<GameBean> beanList) {
+               tvResult.setText(beanList.get(0).toString());
+            }
 
-                    }
+            @Override
+            public void onFail(String error) {
 
-                    @Override
-                    public void onNext(@NonNull ResponseBody responseBody) {
-                        try {
-                            tvResult.setText(responseBody.string());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
+            }
+        }), map);
     }
 }

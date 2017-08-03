@@ -1,9 +1,11 @@
 package mrallright.httpexample.rxjava;
 
+import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Observable;
-import okhttp3.ResponseBody;
+import mrallright.httpexample.retrofit.GameBean;
+import mrallright.httpexample.retrofit.ResultEntity;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
@@ -17,5 +19,5 @@ import retrofit2.http.POST;
 public interface RetrofitService {
     @FormUrlEncoded
     @POST("app/gift/gift_list/")
-    Observable<ResponseBody> getGameList(@FieldMap Map<String, String> map);
+    Observable<ResultEntity<List<GameBean>>> getGameList(@FieldMap Map<String, String> map);
 }
